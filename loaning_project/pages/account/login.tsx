@@ -1,11 +1,27 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 const Login =() =>{
-    const [user,setUser] =useState("");
+    const [user_id,setUser] =useState("");
     const [password, setPassword] = useState("");
 
-    const onLogin = () =>{
-        
+    const onLogin = async()=>{
+        const connect = await fetch("api/account",{
+            method:"POST",
+            body:JSON.stringify({
+                user_id,
+                password
+            }),
+            headers:{
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await connect.json();
+        toast.info(result.msg);
     }
+    // useEffect(()=>{
+    //     Test();
+    // })
     
     return(
         <section className="login">
@@ -22,7 +38,7 @@ const Login =() =>{
                                     <label htmlFor="#userId">User ID:</label>
                                 </div>
                                 <div className="col-10">
-                                    <input id="userId" type="text" className="form-control" value={user} onChange={(evt)=>setUser(evt.target.value)}/>
+                                    <input id="userId" type="text" className="form-control" value={user_id} onChange={(evt)=>setUser(evt.target.value)}/>
                                 </div>
                                 <div className="col-2 mt-3">
                                     <label htmlFor="#password">Password:</label>
