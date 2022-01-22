@@ -62,17 +62,34 @@ a {
   background: #c3332b !important;
 }
 
+.user-sidebar {
+  height: 100vh !important;
+  width: 20% !important;
+}
+
 .logo-section {
   margin: 1em;
 }
+.nav-link {
+  border-radius: 0 !important;
+  padding: 1em !important;
+}
 
+/*admin sidebar*/
 #v-pills-tab .nav-link {
-  border-radius: 0;
   background: #c3332b !important;
   color: white !important;
-  padding: 1em;
 }
 #v-pills-tab .nav-link.active {
   background: #f2e0c2 !important;
+  color: #c3332b !important;
+}
+
+/*client sidebar*/
+#v-pills-tab-2 .nav-link {
+  color: white !important;
+}
+#v-pills-tab-2 .nav-link.active {
+  background: #fff !important;
   color: #c3332b !important;
 }

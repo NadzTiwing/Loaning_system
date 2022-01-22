@@ -5,19 +5,31 @@ const Login =() =>{
     const [password, setPassword] = useState("");
 
     const onLogin = async()=>{
-        const connect = await fetch("api/account",{
+        const check = await fetch("api/account",{
             method:"POST",
             body:JSON.stringify({
-                user_id,
-                password
+                user: user_id,
+                password: password,
+                action: "authenticate"
             }),
             headers:{
                 "Content-Type": "application/json"
             }
         });
 
-        const result = await connect.json();
-        toast.info(result.msg);
+        const result = await check.json();
+        if(result.status === "success"){
+            toast.info(result.isMatched);
+            if(result.isMatched){
+                if(result.accountId == 1){ //if admin redirect to admin page
+                    window.location.href = "/admin";
+                } else{ // redirect to the client page
+                    
+                }
+            }
+            else toast.error("Incorrect Password / Username");
+        }
+        //toast.info(result.msg);
     }
     // useEffect(()=>{
     //     Test();
