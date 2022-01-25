@@ -1,9 +1,22 @@
 import Image from "next/image";
 import AccountSettings from "./AccountSettings";
+import { useSession, signOut  } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+
 const Index = () => {
+    // const [session, loading]:any = useSession();
+    const { data: session, status } = useSession()
+    //const { accessToken }:any = data;
+    
+    console.log(status);
+    useEffect(()=>{
+        if(status === "unauthenticated") window.location.href="/";
+    },[status])
+
     const onLogout=()=>{
         if(confirm("Are you sure you want to leave this page?")){
-            window.location.href="/"; //return to login page
+            signOut({ callbackUrl: '/' });
         }
     }
     return(

@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import excuteQuery from '../../lib/db'
+import { getSession } from "next-auth/react"
 
 type Res={
     status:string,
@@ -10,7 +11,7 @@ type Res={
 
 const bcrypt = require('bcryptjs');
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Res>
 ) {
@@ -48,11 +49,21 @@ export default function handler(
             case 'authenticate':
                 let isMatched = false;
                 let accountId = 0;
-                Authenticate(user_id, password).then(result=>{
-                    isMatched = result.isMatch;
-                    accountId= result.accountId;
-                    res.status(200).json({ status: 'success', isMatched:isMatched, accountId: accountId  });
-                }).catch(err=>{console.log(err)});
+                // Authenticate(user_id, password).then(result=>{
+                //     isMatched = result.isMatch;
+                //     accountId= result.accountId;
+                //     res.status(200).json({ status: 'success', isMatched:isMatched, accountId: accountId  });
+                // }).catch(err=>{console.log(err)});
+                const authResult = await excuteQuery({
+                    query: 'SELECT * FROM account WHERE user_id = ?',
+                    values: [user_id],
+                });
+                if(authResult.length === 0){
+                    res.status(200).json({ status: 'not found'});
+                }else{
+                    const isMatch = await bcrypt.compareSync(password, authResult[0].password);
+                    res.status(200).json({ status: 'success', isMatched:isMatch, accountId: authResult[0].account_id  });
+                }
             break;
             default:
                 res.status(200).json({ status: 'success' });
@@ -63,6 +74,6 @@ export default function handler(
         
     }catch(e){
         console.log(e);
-        res.status(200).json({ status: 'failed' })
+        res.status(200).json({ status: 'error' })
     }
 }
